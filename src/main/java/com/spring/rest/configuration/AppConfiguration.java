@@ -1,5 +1,6 @@
 package com.spring.rest.configuration;
 
+import com.spring.rest.utils.exceptions.RestTemplateResponseErrorHandler;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClients;
@@ -24,7 +25,7 @@ import java.security.cert.X509Certificate;
 @Configuration
 @ComponentScan("com.spring.rest")
 @PropertySource("classpath:application.properties")
-public class MyConfig {
+public class AppConfiguration {
 
     @Value("${trust.store}")
     private String trustStore;
@@ -47,6 +48,8 @@ public class MyConfig {
                 .build();
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(client);
-        return new RestTemplate(requestFactory);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+        return restTemplate;
     }
 }
